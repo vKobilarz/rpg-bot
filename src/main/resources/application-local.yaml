@@ -1,0 +1,4 @@
+jdbc:
+  connectionUrl: jdbc:postgresql://localhost:5432/user-manager
+  username: vinicius.kobilarz
+  password:
