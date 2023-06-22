@@ -1,7 +1,10 @@
 package com.vkobilarz.rpgbot.controllers;
 
+import com.vkobilarz.rpgbot.exceptions.ValidationException;
 import com.vkobilarz.rpgbot.models.User;
 import com.vkobilarz.rpgbot.repositories.UserRepository;
+import com.vkobilarz.rpgbot.validators.IdValidation;
+import com.vkobilarz.rpgbot.validators.UserValidation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +37,14 @@ public class UserController {
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<User> create(@RequestBody User user) throws URISyntaxException, SQLException {
+        UserValidation.validateThat()
+                .isNameValid()
+                .isUrlValid()
+                .isEmailValid()
+                .isPhoneNumberValid()
+                .apply(user)
+                .ifInvalidThrow(ValidationException::new);
+
         userRepository.createUser(user);
 
         return ResponseEntity
@@ -43,6 +54,22 @@ public class UserController {
 
     @RequestMapping(value = "{userId}", method = RequestMethod.PUT)
     public ResponseEntity<User> update(@PathVariable Long userId, @RequestBody User user) throws SQLException {
+        String id = userId == null ? null : userId.toString();
+
+        IdValidation.validateThat()
+                .isRequired()
+                .isNumericId()
+                .apply(id)
+                .ifInvalidThrow(ValidationException::new);
+
+        UserValidation.validateThat()
+                .isNameValid()
+                .isUrlValid()
+                .isEmailValid()
+                .isPhoneNumberValid()
+                .apply(user)
+                .ifInvalidThrow(ValidationException::new);
+
         user.setId(userId);
 
         userRepository.updateUser(user);
@@ -53,8 +80,14 @@ public class UserController {
     }
 
     @RequestMapping(value = "{userId}", method = RequestMethod.DELETE)
-    public ResponseEntity<User> delete(@PathVariable Integer userId) throws SQLException {
-        userRepository.deleteUserById(userId);
+    public ResponseEntity<User> delete(@PathVariable String userId) throws SQLException {
+        IdValidation.validateThat()
+                .isRequired()
+                .isNumericId()
+                .apply(userId)
+                .ifInvalidThrow(ValidationException::new);
+
+        userRepository.deleteUserById(Integer.parseInt(userId));
 
         return ResponseEntity.ok().build();
     }
