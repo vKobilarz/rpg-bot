@@ -1,12 +1,3 @@
-# Input do Usuário
-O usuário enviará eventos a partir de um chat pelo Slack ou pelo Discord.
-
-Cada Evento poderá acionar somente uma ação.
-
-O evento seguirá o seguinte padrão:
-
-[Ação] [Parâmetro 1] [Parâmetro 2] ...
-
 # Atributos
 ### Vitalidade
 * Aumenta a vida máxima do personagem.
@@ -62,6 +53,15 @@ O evento seguirá o seguinte padrão:
 * A sequência dos turnos é determinada pela agilidade dos personagens.
 * O combate é feito entre dois grupos.
 * Cada grupo pode ter de 1 até 4 participantes.
+
+# Input do Usuário
+O usuário enviará eventos a partir de um chat pelo Slack ou pelo Discord.
+
+Cada Evento poderá acionar somente uma ação.
+
+O evento seguirá o seguinte padrão:
+
+[Ação] [Parâmetro 1] [Parâmetro 2] ...
 
 # Ações disponíveis
 ### Start
