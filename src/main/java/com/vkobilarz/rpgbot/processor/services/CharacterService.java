@@ -1,16 +1,14 @@
 package com.vkobilarz.rpgbot.processor.services;
 
-import com.vkobilarz.rpgbot.processor.models.Character;
-import com.vkobilarz.rpgbot.processor.models.CharacterState;
-import com.vkobilarz.rpgbot.processor.models.CharacterStats;
-import com.vkobilarz.rpgbot.processor.models.User;
+import com.vkobilarz.rpgbot.core.models.Character;
+import com.vkobilarz.rpgbot.core.models.CharacterState;
+import com.vkobilarz.rpgbot.core.models.CharacterStats;
+import com.vkobilarz.rpgbot.core.models.User;
 import com.vkobilarz.rpgbot.processor.repositories.CharacterRepository;
 import com.vkobilarz.rpgbot.processor.repositories.UserRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.text.DecimalFormat;
-import java.text.ParseException;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -26,8 +24,9 @@ public class CharacterService {
     }
 
     public Character createEnemy() {
-        Number health = formatNumber(50 + Math.random() * 25);
-        Number damage = formatNumber(10 + Math.random() * 5);
+        Random random = new Random();
+        float health = 50 + random.nextFloat() * 25;
+        float damage = 10 + random.nextFloat() * 5;
 
         CharacterStats baseStats = CharacterStats.builder().health(health).damage(damage).build();
         CharacterStats currentStats = CharacterStats.builder().health(health).damage(damage).build();
@@ -38,21 +37,11 @@ public class CharacterService {
                 .build();
     }
 
-    private Number formatNumber(Number number) {
-        DecimalFormat numberFormat = new DecimalFormat("#.00");
-
-        try {
-            return numberFormat.parse(numberFormat.format(number));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private Character createMockedCharacter() {
         CharacterStats baseStats = CharacterStats.builder().health(100).damage(30).build();
         CharacterStats currentStats = CharacterStats.builder().health(100).damage(30).build();
         CharacterState state = CharacterState.builder().inCombat(false).build();
-        User user = userRepository.findUserById(UUID.fromString("08f49f35-2405-49b5-8c12-1c8dc767394d"));
+        User user = userRepository.getUserById(999);
 
         return Character.builder()
                 .id(UUID.fromString("9676645e-1278-48eb-b49c-9485c78662fe"))

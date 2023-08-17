@@ -1,14 +1,14 @@
 package com.vkobilarz.rpgbot.processor.services;
 
 import com.vkobilarz.rpgbot.processor.actions.AttackAction;
-import com.vkobilarz.rpgbot.processor.actions.BaseAction;
+import com.vkobilarz.rpgbot.processor.actions.Action;
 import com.vkobilarz.rpgbot.processor.actions.ScoutAction;
-import com.vkobilarz.rpgbot.processor.models.Action;
-import com.vkobilarz.rpgbot.processor.models.Character;
-import com.vkobilarz.rpgbot.processor.models.CreateActionResponse;
+import com.vkobilarz.rpgbot.processor.models.ActionName;
+import com.vkobilarz.rpgbot.core.models.Character;
+import com.vkobilarz.rpgbot.processor.models.ActionRequest;
+import com.vkobilarz.rpgbot.processor.models.ActionResponse;
 import com.vkobilarz.rpgbot.processor.repositories.CharacterRepository;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,36 +18,28 @@ public class ActionService {
     private final ScoutAction scoutAction;
     private final AttackAction attackAction;
 
-    public CreateActionResponse executeAction(Action action) throws Exception {
+    public ActionResponse execute(ActionRequest action) {
         Character character = characterRepository.findCharacterById(action.getCharacterId());
-        BaseAction actionExecutor = getActionExecutor(action.getType());
+        Action actionExecutor = getActionExecutor(action.getType());
 
         if (actionExecutor == null) {
-            throw new Exception();
-        }
-
-        if (!actionExecutor.canExecuteAction(character)) {
-            throw new Exception();
+            throw new RuntimeException("Action not found");
         }
 
         actionExecutor.execute(character);
 
-        return CreateActionResponse.builder()
-                .requestedAction(action)
+        return ActionResponse.builder()
+                .action(action)
                 .character(character)
                 .build();
     }
 
-    private BaseAction getActionExecutor(String actionType) {
-        if (actionType == null) {
-            return null;
+    //TODO: Reflection on enums
+    private Action getActionExecutor(ActionName action) {
+        switch (action) {
+            case SCOUT: return scoutAction;
+            case ATTACK: return attackAction;
+            default: return null;
         }
-
-        switch (actionType) {
-            case "SCOUT": return scoutAction;
-            case "ATTACK": return attackAction;
-        }
-
-        return null;
     }
 }

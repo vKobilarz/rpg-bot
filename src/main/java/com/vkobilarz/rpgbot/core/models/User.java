@@ -1,14 +1,13 @@
-package com.vkobilarz.rpgbot.processor.models;
+package com.vkobilarz.rpgbot.core.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.UUID;
-
 @AllArgsConstructor
 @Getter
 @Builder
 public class User {
-    private UUID id;
+    private int id;
+    private String name;
 }

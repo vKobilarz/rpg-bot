@@ -1,7 +1,7 @@
 package com.vkobilarz.rpgbot.processor.controllers;
 
-import com.vkobilarz.rpgbot.processor.models.Action;
-import com.vkobilarz.rpgbot.processor.models.CreateActionResponse;
+import com.vkobilarz.rpgbot.processor.models.ActionRequest;
+import com.vkobilarz.rpgbot.processor.models.ActionResponse;
 import com.vkobilarz.rpgbot.processor.services.ActionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 public class ActionController {
-    private final ActionService actionService;
+    private final ActionService action;
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<CreateActionResponse> createAction(@RequestBody Action action) throws Exception {
-        CreateActionResponse createActionResponse = actionService.executeAction(action);
-
-        return ResponseEntity.ok().body(createActionResponse);
+    public ResponseEntity<ActionResponse> create(@RequestBody ActionRequest entry) {
+        return ResponseEntity.ok().body(action.execute(entry));
     }
 }

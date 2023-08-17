@@ -1,8 +1,7 @@
 package com.vkobilarz.rpgbot.processor.repositories;
 
-import com.vkobilarz.rpgbot.processor.models.Character;
+import com.vkobilarz.rpgbot.core.models.Character;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ public class CharacterRepository {
     private final ArrayList<Character> characters;
 
     public Character findCharacterById(UUID id) {
-        return characters.stream().filter(character -> character.getId().toString().equals(id.toString()))
+        return characters.stream().filter(character -> character.getId().equals(id))
                 .findFirst()
                 .orElse(null);
     }

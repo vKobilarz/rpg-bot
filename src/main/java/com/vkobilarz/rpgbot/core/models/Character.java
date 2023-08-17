@@ -1,5 +1,6 @@
-package com.vkobilarz.rpgbot.processor.models;
+package com.vkobilarz.rpgbot.core.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,4 +18,8 @@ public class Character {
     private CharacterStats baseStats;
     private CharacterStats currentStats;
     private CharacterState state;
+    @JsonIgnore
+    public float getPlayerHealth() {
+        return currentStats.getHealth();
+    }
 }

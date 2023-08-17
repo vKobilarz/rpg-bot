@@ -9,7 +9,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Builder
-public class Action {
+public class ActionRequest {
     private UUID characterId;
-    private String type;
+    private ActionName type;
 }

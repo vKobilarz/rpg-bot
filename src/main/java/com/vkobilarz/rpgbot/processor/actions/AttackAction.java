@@ -1,69 +1,50 @@
 package com.vkobilarz.rpgbot.processor.actions;
 
-import com.vkobilarz.rpgbot.processor.models.Character;
-import com.vkobilarz.rpgbot.processor.models.CharacterState;
-import com.vkobilarz.rpgbot.processor.models.CharacterStats;
+import com.vkobilarz.rpgbot.core.models.Character;
+import com.vkobilarz.rpgbot.core.models.CharacterState;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AttackAction implements BaseAction {
+public class AttackAction implements Action {
     @Override
-    public Boolean canExecuteAction(Character character) {
-        Boolean isCharacterInCombat = character.getState().getInCombat();
-
-        return isCharacterInCombat;
+    public boolean validate(Character character) {
+        return character.getState().getInCombat();
     }
 
     @Override
-    public void execute(Character character) {
-        executePlayerTurn(character);
+    public void run(Character player) {
+        Character enemy = player.getState().getInCombatEnemy();
 
-        if (isEnemySlain(character)) {
-            removePlayerFromCombat(character);
-
+        executeTurn(player, enemy);
+        if (isSlain(enemy)) {
+            removePlayerFromCombat(player);
             return;
         }
 
-        executeEnemyTurn(character);
-
-        if (isPlayerSlain(character)) {
-            removePlayerFromCombat(character);
-            resetsPlayer(character);
+        executeTurn(enemy, player);
+        if (isSlain(player)) {
+            removePlayerFromCombat(player);
+            resetsPlayer(player);
         }
     }
 
-    private void executePlayerTurn(Character character) {
-        Number playerDamage = character.getCurrentStats().getDamage();
-        Number enemyHealth = getEnemyHealth(character);
+    private void executeTurn(Character source, Character target) {
+        float damage = source.getCurrentStats().getDamage();
+        float health = target.getPlayerHealth();
 
-        Number enemyHealthWithDamageTaken = enemyHealth.floatValue() - playerDamage.floatValue();
+        float healthWithDamageTaken = health - damage;
 
-        character.getState().getInCombatEnemy().getCurrentStats().setHealth(enemyHealthWithDamageTaken);
+        target.getCurrentStats().setHealth(healthWithDamageTaken);
     }
 
-    private void executeEnemyTurn(Character character) {
-        Number playerHealth = getPlayerHealth(character);
-        Number enemyDamage = character.getState().getInCombatEnemy().getCurrentStats().getDamage();
+    private boolean isSlain(Character character) {
+        float health = character.getPlayerHealth();
 
-        Number playerHealthWithDamageTaken = playerHealth.floatValue() - enemyDamage.floatValue();
-
-        character.getCurrentStats().setHealth(playerHealthWithDamageTaken);
-    }
-
-    private boolean isEnemySlain(Character character) {
-        Number enemyHealth = getEnemyHealth(character);
-
-        return enemyHealth.floatValue() <= 0;
-    }
-
-    private boolean isPlayerSlain(Character character) {
-        Number playerHealth = getPlayerHealth(character);
-
-        return playerHealth.floatValue() <= 0;
+        return health <= 0;
     }
 
     private void resetsPlayer(Character character) {
-        Number playerMaxHealth = character.getBaseStats().getHealth();
+        float playerMaxHealth = character.getBaseStats().getHealth();
 
         character.getCurrentStats().setHealth(playerMaxHealth);
     }
@@ -76,10 +57,5 @@ public class AttackAction implements BaseAction {
         character.setState(newState);
     }
 
-    private Number getEnemyHealth(Character character) {
-        return character.getState().getInCombatEnemy().getCurrentStats().getHealth();
-    }
-    private Number getPlayerHealth(Character character) {
-        return character.getCurrentStats().getHealth();
-    }
+
 }
