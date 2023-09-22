@@ -1,4 +1,6 @@
-jdbc:
-  connectionUrl: jdbc:postgresql://localhost:5432/user-manager
-  username: vinicius.kobilarz
-  password:
+spring:
+    datasource:
+      url: jdbc:postgresql://localhost:5432/user-manager
+      username: vinicius.kobilarz
+      password:
+      driver-class-name: org.postgresql.Driver

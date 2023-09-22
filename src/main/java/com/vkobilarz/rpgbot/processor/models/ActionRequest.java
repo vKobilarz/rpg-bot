@@ -10,6 +10,6 @@ import java.util.UUID;
 @Getter
 @Builder
 public class ActionRequest {
-    private UUID characterId;
+    private int characterId;
     private ActionName type;
 }

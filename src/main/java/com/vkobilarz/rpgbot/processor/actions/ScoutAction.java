@@ -1,29 +1,36 @@
 package com.vkobilarz.rpgbot.processor.actions;
 
 import com.vkobilarz.rpgbot.core.models.Character;
-import com.vkobilarz.rpgbot.core.models.CharacterState;
+import com.vkobilarz.rpgbot.core.models.Combat;
+import com.vkobilarz.rpgbot.processor.repositories.CharacterRepository;
 import com.vkobilarz.rpgbot.processor.services.CharacterService;
+import com.vkobilarz.rpgbot.processor.services.CombatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
 public class ScoutAction implements Action {
     private final CharacterService characterService;
+    private final CharacterRepository characterRepository;
+    private final CombatService combatService;
+
     @Override
     public boolean validate(Character character) {
-        return !character.getState().getInCombat();
+        return ! (boolean) character.getState().getInCombat();
     }
 
     @Override
     public void run(Character character) {
         Character enemy = characterService.createEnemy();
 
-        CharacterState newState = CharacterState.builder()
-                .inCombatEnemy(enemy)
-                .inCombat(true)
-                .build();
+        combatService.startCombat(character, enemy);
+    }
 
-        character.setState(newState);
+    @Override
+    public void run(Combat combat) {
+
     }
 }

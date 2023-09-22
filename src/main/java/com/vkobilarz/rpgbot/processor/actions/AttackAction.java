@@ -1,10 +1,12 @@
 package com.vkobilarz.rpgbot.processor.actions;
 
 import com.vkobilarz.rpgbot.core.models.Character;
-import com.vkobilarz.rpgbot.core.models.CharacterState;
+import com.vkobilarz.rpgbot.core.models.Combat;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class AttackAction implements Action {
     @Override
     public boolean validate(Character character) {
@@ -12,50 +14,21 @@ public class AttackAction implements Action {
     }
 
     @Override
-    public void run(Character player) {
-        Character enemy = player.getState().getInCombatEnemy();
-
-        executeTurn(player, enemy);
-        if (isSlain(enemy)) {
-            removePlayerFromCombat(player);
-            return;
-        }
-
-        executeTurn(enemy, player);
-        if (isSlain(player)) {
-            removePlayerFromCombat(player);
-            resetsPlayer(player);
-        }
+    public void run(Character character) {
     }
 
-    private void executeTurn(Character source, Character target) {
+    @Override
+    public void run(Combat combat) {
+        boolean isAttackingTurn = combat.isAttackingTurn();
+        Character source = isAttackingTurn ? combat.getAttackingCharacter() : combat.getDefendingCharacter();
+        Character target = isAttackingTurn ? combat.getDefendingCharacter() : combat.getAttackingCharacter();
+
         float damage = source.getCurrentStats().getDamage();
         float health = target.getPlayerHealth();
 
         float healthWithDamageTaken = health - damage;
 
         target.getCurrentStats().setHealth(healthWithDamageTaken);
+        combat.setAttackingTurn(!isAttackingTurn);
     }
-
-    private boolean isSlain(Character character) {
-        float health = character.getPlayerHealth();
-
-        return health <= 0;
-    }
-
-    private void resetsPlayer(Character character) {
-        float playerMaxHealth = character.getBaseStats().getHealth();
-
-        character.getCurrentStats().setHealth(playerMaxHealth);
-    }
-
-    private void removePlayerFromCombat(Character character) {
-        CharacterState newState = CharacterState.builder()
-                .inCombat(false)
-                .build();
-
-        character.setState(newState);
-    }
-
-
 }

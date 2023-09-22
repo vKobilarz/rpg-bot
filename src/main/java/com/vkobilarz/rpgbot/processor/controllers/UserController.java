@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("/user")
 @RestController
@@ -21,21 +21,28 @@ import java.util.List;
 public class UserController {
     private final UserRepository userRepository;
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<List<User>> getAll() throws SQLException {
-        return ResponseEntity.ok(userRepository.getUsers());
+    public ResponseEntity<List<User>> getAll() {
+        return ResponseEntity.ok(userRepository.findAll());
     }
     @RequestMapping(value = "{userId}", method = RequestMethod.GET)
-    public ResponseEntity<User> get(@PathVariable int userId) {
-        User user = userRepository.getUserById(userId);
+    public ResponseEntity<User> get(@PathVariable Integer userId) {
+        Optional<User> user = userRepository.findById(userId);
 
-        return ResponseEntity.ok(user);
+        if (!user.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user.get());
     }
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<User> create(@RequestBody User user) throws URISyntaxException, SQLException {
-        userRepository.createUser(user);
+    public ResponseEntity<User> create(@RequestBody User user) {
+        try {
+            userRepository.save(user);
 
-        return ResponseEntity
-                .created(new URI("/user"))
-                .build();
+            return ResponseEntity
+                    .created(new URI("/user"))
+                    .build();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

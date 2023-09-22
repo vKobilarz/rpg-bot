@@ -14,19 +14,26 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class ActionService {
+    private final CombatService combatService;
     private final CharacterRepository characterRepository;
     private final ScoutAction scoutAction;
     private final AttackAction attackAction;
 
     public ActionResponse execute(ActionRequest action) {
-        Character character = characterRepository.findCharacterById(action.getCharacterId());
+        Character character = characterRepository.findById(action.getCharacterId()).orElseThrow();
+
         Action actionExecutor = getActionExecutor(action.getType());
+//        if (actionExecutor instanceof Action) {}
 
         if (actionExecutor == null) {
             throw new RuntimeException("Action not found");
         }
 
-        actionExecutor.execute(character);
+        if (combatService.isCombatAction(action.getType())) {
+            combatService.handlePlayerCombat(character, actionExecutor);
+        } else {
+            actionExecutor.process(character);
+        }
 
         return ActionResponse.builder()
                 .action(action)
@@ -34,7 +41,6 @@ public class ActionService {
                 .build();
     }
 
-    //TODO: Reflection on enums
     private Action getActionExecutor(ActionName action) {
         switch (action) {
             case SCOUT: return scoutAction;
