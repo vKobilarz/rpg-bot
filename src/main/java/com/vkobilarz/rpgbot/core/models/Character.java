@@ -56,11 +56,14 @@ public class Character {
         currentStats.setHealth(maxHealth);
     }
     public void executeAttack(Character target) {
-        float damage = currentStats.getDamage();
+        float damage = currentStats.getDamage() - target.getCurrentStats().getArmor();
         float health = target.getPlayerHealth();
 
-        float healthWithDamageTaken = health - damage;
+        if (damage <= 0) {
+            return;
+        }
 
+        float healthWithDamageTaken = health - damage;
         target.getCurrentStats().setHealth(healthWithDamageTaken);
     }
 }

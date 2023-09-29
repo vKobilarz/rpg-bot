@@ -25,8 +25,7 @@ public class CharacterStats {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "character_stats_generator")
     @SequenceGenerator(name = "character_stats_generator", sequenceName = "character_stats_id", allocationSize = 1)
     private int id;
-    @JsonProperty("health")
     private float health;
-    @JsonProperty("damage")
     private float damage;
+    private float armor;
 }
