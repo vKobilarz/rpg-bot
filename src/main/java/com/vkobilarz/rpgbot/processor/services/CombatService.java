@@ -44,7 +44,4 @@ public class CombatService {
     public Combat getActiveCombatByPlayer(Character player, boolean isAttackingTurn) {
         return combatRepository.findActiveCombatByPlayer(player.getId(), isAttackingTurn);
     }
-    public boolean isCombatAction(ActionName actionName) {
-        return actionName == ActionName.ATTACK;
-    }
 }

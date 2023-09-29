@@ -23,16 +23,19 @@ public class CharacterService {
         float health = 50 + (int) (random.nextFloat() * 25);
         float damage = 10 + (int) (random.nextFloat() * 5);
         float armor = 5 + (int) (random.nextFloat() * 10);
+        float stamina = 40 + (int) (random.nextFloat() * 20);
 
         CharacterStats baseStats = CharacterStats.builder()
                 .health(health)
                 .damage(damage)
                 .armor(armor)
+                .stamina(stamina)
                 .build();
         CharacterStats currentStats = CharacterStats.builder()
                 .health(health)
                 .damage(damage)
                 .armor(armor)
+                .stamina(stamina)
                 .build();
 
         Character enemy = Character.builder()

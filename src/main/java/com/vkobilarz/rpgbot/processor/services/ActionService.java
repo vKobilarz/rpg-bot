@@ -2,6 +2,7 @@ package com.vkobilarz.rpgbot.processor.services;
 
 import com.vkobilarz.rpgbot.processor.actions.AttackAction;
 import com.vkobilarz.rpgbot.processor.actions.Action;
+import com.vkobilarz.rpgbot.processor.actions.BreatherAction;
 import com.vkobilarz.rpgbot.processor.actions.ScoutAction;
 import com.vkobilarz.rpgbot.processor.models.ActionName;
 import com.vkobilarz.rpgbot.core.models.Character;
@@ -14,10 +15,10 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class ActionService {
-    private final CombatService combatService;
     private final CharacterRepository characterRepository;
     private final ScoutAction scoutAction;
     private final AttackAction attackAction;
+    private final BreatherAction breatherAction;
 
     public ActionResponse execute(ActionRequest action) {
         Character character = characterRepository.findById(action.getCharacterId()).orElseThrow();
@@ -40,6 +41,7 @@ public class ActionService {
         switch (action) {
             case SCOUT: return scoutAction;
             case ATTACK: return attackAction;
+            case BREATHER: return breatherAction;
             default: return null;
         }
     }

@@ -42,10 +42,6 @@ public class Character {
     private CharacterState state;
     private String type;
     @JsonIgnore
-    public float getPlayerHealth() {
-        return currentStats.getHealth();
-    }
-    @JsonIgnore
     public boolean isDead() {
         return currentStats.getHealth() <= 0;
     }
@@ -57,13 +53,14 @@ public class Character {
     }
     public void executeAttack(Character target) {
         float damage = currentStats.getDamage() - target.getCurrentStats().getArmor();
-        float health = target.getPlayerHealth();
+        float health = target.getCurrentStats().getHealth();
+        float stamina = currentStats.getStamina();
 
         if (damage <= 0) {
             return;
         }
 
-        float healthWithDamageTaken = health - damage;
-        target.getCurrentStats().setHealth(healthWithDamageTaken);
+        currentStats.setStamina(stamina - 10);
+        target.getCurrentStats().setHealth(health - damage);
     }
 }

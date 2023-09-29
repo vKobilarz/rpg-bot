@@ -10,10 +10,14 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class AttackAction implements Action {
     private final CombatService combatService;
+    private final float staminaCost = 10;
 
     @Override
     public boolean validate(Character character) {
-        return character.getState().getInCombat();
+        boolean isInCombat =  character.getState().getInCombat();
+        boolean hasStamina = character.getCurrentStats().getStamina() >= staminaCost;
+
+        return isInCombat && hasStamina;
     }
 
     @Override

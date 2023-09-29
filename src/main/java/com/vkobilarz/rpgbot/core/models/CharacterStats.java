@@ -28,4 +28,5 @@ public class CharacterStats {
     private float health;
     private float damage;
     private float armor;
+    private float stamina;
 }
