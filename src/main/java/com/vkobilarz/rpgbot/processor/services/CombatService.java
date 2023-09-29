@@ -31,15 +31,16 @@ public class CombatService {
                 .defendingCharacter(defendingCharacter)
                 .build();
 
-        combatRepository.saveAndFlush(combat);
+        combatRepository.save(combat);
 
         attackingCharacter.getState().setInCombat(true);
         defendingCharacter.getState().setInCombat(true);
 
-        characterRepository.saveAllAndFlush(List.of(attackingCharacter, defendingCharacter));
+        characterRepository.saveAll(List.of(attackingCharacter, defendingCharacter));
     }
     public void handlePlayerCombat(Character player, Action action) {
         Combat combat = combatRepository.findByAttackingCharacter_IdAndAttackingCharacter_TypeAndIsAttackingTurnAndIsFinished(player.getId(), player.getType(), true, false);
+
         action.process(combat);
 
         executeCombat(combat);
@@ -61,7 +62,7 @@ public class CombatService {
             return;
         }
 
-        combatRepository.saveAndFlush(combat);
+        combatRepository.save(combat);
     }
 
     private void executeTurn(Character source, Character target) {
@@ -79,7 +80,7 @@ public class CombatService {
 
         combat.setFinished(true);
 
-        combatRepository.saveAndFlush(combat);
+        combatRepository.save(combat);
     }
 
     public boolean isCombatAction(ActionName actionName) {

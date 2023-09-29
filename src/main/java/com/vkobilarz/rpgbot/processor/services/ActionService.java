@@ -23,7 +23,6 @@ public class ActionService {
         Character character = characterRepository.findById(action.getCharacterId()).orElseThrow();
 
         Action actionExecutor = getActionExecutor(action.getType());
-//        if (actionExecutor instanceof Action) {}
 
         if (actionExecutor == null) {
             throw new RuntimeException("Action not found");

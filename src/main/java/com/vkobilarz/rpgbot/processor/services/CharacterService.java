@@ -34,7 +34,7 @@ public class CharacterService {
                 .type("ENEMY")
                 .build();
 
-        characterRepository.saveAndFlush(enemy);
+        characterRepository.save(enemy);
 
         return enemy;
     }

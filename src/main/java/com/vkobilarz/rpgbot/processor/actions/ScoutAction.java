@@ -2,19 +2,15 @@ package com.vkobilarz.rpgbot.processor.actions;
 
 import com.vkobilarz.rpgbot.core.models.Character;
 import com.vkobilarz.rpgbot.core.models.Combat;
-import com.vkobilarz.rpgbot.processor.repositories.CharacterRepository;
 import com.vkobilarz.rpgbot.processor.services.CharacterService;
 import com.vkobilarz.rpgbot.processor.services.CombatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-
 @Component
 @RequiredArgsConstructor
 public class ScoutAction implements Action {
     private final CharacterService characterService;
-    private final CharacterRepository characterRepository;
     private final CombatService combatService;
 
     @Override

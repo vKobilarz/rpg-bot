@@ -34,6 +34,7 @@ public class Character {
     @ManyToOne(cascade=CascadeType.PERSIST)
     @JoinColumn(name = "base_stats_id")
     private CharacterStats baseStats;
+    // TODO: View @ElementCollection
     @ManyToOne(cascade= CascadeType.PERSIST)
     @JoinColumn(name = "current_stats_id")
     private CharacterStats currentStats;
