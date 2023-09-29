@@ -1,8 +1,7 @@
 package com.vkobilarz.rpgbot.core.models;
 
-import com.vkobilarz.rpgbot.core.models.Character;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,4 +36,8 @@ public class Combat {
     private Character defendingCharacter;
     private boolean isAttackingTurn;
     private boolean isFinished;
+    @JsonIgnore
+    public boolean shouldFinish() {
+        return attackingCharacter.isDead() || defendingCharacter.isDead();
+    }
 }

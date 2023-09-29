@@ -5,21 +5,15 @@ import com.vkobilarz.rpgbot.core.models.Combat;
 
 public interface Action {
     boolean validate(Character character);
-    void run(Character character);
-    void run(Combat combat);
-
+    void executePreAction(Character character);
+    void executeAction(Character character);
+    void executePosAction(Character character);
     public default void process(Character character) {
         if (!validate(character)) {
             throw new RuntimeException("Can not execute action in current state");
         }
-
-        run(character);
-    }
-    public default void process(Combat combat) {
-        if (!validate(combat.getAttackingCharacter())) {
-            throw new RuntimeException("Can not execute action in current state");
-        }
-
-        run(combat);
+        executePreAction(character);
+        executeAction(character);
+        executePosAction(character);
     }
 }

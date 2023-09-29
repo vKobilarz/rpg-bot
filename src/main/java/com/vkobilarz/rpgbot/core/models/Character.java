@@ -34,7 +34,6 @@ public class Character {
     @ManyToOne(cascade=CascadeType.PERSIST)
     @JoinColumn(name = "base_stats_id")
     private CharacterStats baseStats;
-    // TODO: View @ElementCollection
     @ManyToOne(cascade= CascadeType.PERSIST)
     @JoinColumn(name = "current_stats_id")
     private CharacterStats currentStats;
@@ -44,7 +43,7 @@ public class Character {
     private String type;
     @JsonIgnore
     public float getPlayerHealth() {
-        return (float) currentStats.getHealth();
+        return currentStats.getHealth();
     }
     @JsonIgnore
     public boolean isDead() {
@@ -55,5 +54,13 @@ public class Character {
         float maxHealth = baseStats.getHealth();
 
         currentStats.setHealth(maxHealth);
+    }
+    public void executeAttack(Character target) {
+        float damage = currentStats.getDamage();
+        float health = target.getPlayerHealth();
+
+        float healthWithDamageTaken = health - damage;
+
+        target.getCurrentStats().setHealth(healthWithDamageTaken);
     }
 }

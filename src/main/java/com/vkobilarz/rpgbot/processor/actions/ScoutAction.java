@@ -1,7 +1,6 @@
 package com.vkobilarz.rpgbot.processor.actions;
 
 import com.vkobilarz.rpgbot.core.models.Character;
-import com.vkobilarz.rpgbot.core.models.Combat;
 import com.vkobilarz.rpgbot.processor.services.CharacterService;
 import com.vkobilarz.rpgbot.processor.services.CombatService;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +16,15 @@ public class ScoutAction implements Action {
     public boolean validate(Character character) {
         return ! (boolean) character.getState().getInCombat();
     }
+    @Override
+    public void executePreAction(Character character) {}
 
     @Override
-    public void run(Character character) {
+    public void executeAction(Character character) {
         Character enemy = characterService.createEnemy();
 
-        combatService.startCombat(character, enemy);
+        combatService.start(character, enemy);
     }
-
     @Override
-    public void run(Combat combat) {
-
-    }
+    public void executePosAction(Character character) {}
 }

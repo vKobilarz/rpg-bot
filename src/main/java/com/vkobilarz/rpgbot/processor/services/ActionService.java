@@ -28,11 +28,7 @@ public class ActionService {
             throw new RuntimeException("Action not found");
         }
 
-        if (combatService.isCombatAction(action.getType())) {
-            combatService.handlePlayerCombat(character, actionExecutor);
-        } else {
-            actionExecutor.process(character);
-        }
+        actionExecutor.process(character);
 
         return ActionResponse.builder()
                 .action(action)

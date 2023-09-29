@@ -2,33 +2,46 @@ package com.vkobilarz.rpgbot.processor.actions;
 
 import com.vkobilarz.rpgbot.core.models.Character;
 import com.vkobilarz.rpgbot.core.models.Combat;
+import com.vkobilarz.rpgbot.processor.services.CombatService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
 public class AttackAction implements Action {
+    private final CombatService combatService;
+
     @Override
     public boolean validate(Character character) {
         return character.getState().getInCombat();
     }
 
     @Override
-    public void run(Character character) {
-    }
-
+    public void executePreAction(Character character) {}
     @Override
-    public void run(Combat combat) {
-        boolean isAttackingTurn = combat.isAttackingTurn();
-        Character source = isAttackingTurn ? combat.getAttackingCharacter() : combat.getDefendingCharacter();
-        Character target = isAttackingTurn ? combat.getDefendingCharacter() : combat.getAttackingCharacter();
+    public void executeAction(Character player) {
+        Combat combat = combatService.getActiveCombatByPlayer(player, true);
+        Character target = combat.getDefendingCharacter();
 
-        float damage = source.getCurrentStats().getDamage();
-        float health = target.getPlayerHealth();
+        player.executeAttack(target);
+        combat.setAttackingTurn(false);
+    }
+    @Override
+    public void executePosAction(Character player) {
+        Combat combat = combatService.getActiveCombatByPlayer(player, false);
 
-        float healthWithDamageTaken = health - damage;
+        if (combat.shouldFinish()) {
+            combatService.finish(combat);
+            return;
+        }
 
-        target.getCurrentStats().setHealth(healthWithDamageTaken);
-        combat.setAttackingTurn(!isAttackingTurn);
+        Character enemy = combat.getDefendingCharacter();
+        enemy.executeAttack(player);
+        combat.setAttackingTurn(true);
+
+        if (combat.shouldFinish()) {
+            combatService.finish(combat);
+            player.resetHealth();
+        }
     }
 }
